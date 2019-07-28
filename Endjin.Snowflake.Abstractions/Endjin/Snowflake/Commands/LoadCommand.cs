@@ -56,6 +56,11 @@ namespace Endjin.Snowflake.Commands
         public bool Force { get; set; }
 
         /// <summary>
+        /// Gets or sets the onError vonstant to apply to the load command.
+        /// </summary>
+        public string OnError { get; set; }
+
+        /// <summary>
         /// Validates the command returning true if the command is valid.
         /// </summary>
         /// <param name="message">Validation error message if the command is not valid, otherwise null.</param>

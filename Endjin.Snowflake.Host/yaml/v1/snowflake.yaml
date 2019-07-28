@@ -74,6 +74,12 @@ components:
           description: >-
              A value indicating whether Snowflake should load all files even if they have
               already been previously loaded.
+        onError:
+          type: string
+          nullable: true
+          description: >-
+             A value indicating how Snowflake should proceed when encountering error rows in source files
+              e.g. skip, abort, continue.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

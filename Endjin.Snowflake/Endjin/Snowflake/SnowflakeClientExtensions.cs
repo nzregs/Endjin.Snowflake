@@ -48,11 +48,14 @@ namespace Endjin.Snowflake
         /// A value indicating whether Snowflake should load all files even if they have
         /// already been previously loaded.
         /// </param>
+        /// <param name="onError">
+        /// A value indicating how Snowflake should handle files with error rows.
+        /// </param>
         /// <returns>The number of rows affected.</returns>
-        public static int Load(this SnowflakeClient client, string stage, string targetTable, string[] files = null, string warehouse = null, string database = null, string schema = null, bool force = false)
+        public static int Load(this SnowflakeClient client, string stage, string targetTable, string[] files = null, string warehouse = null, string database = null, string schema = null, bool force = false, string onError = null)
         {
             IList<string> commands = DefineSnowflakeQueryContext(warehouse, database, schema);
-            commands.Add(LoadSnowflakeCommand(stage, targetTable, files, force));
+            commands.Add(LoadSnowflakeCommand(stage, targetTable, files, force, onError));
             return client.ExecuteNonQuery(commands.ToArray());
         }
 
@@ -108,7 +111,7 @@ namespace Endjin.Snowflake
             return sb.ToString();
         }
 
-        private static string LoadSnowflakeCommand(string stage, string targetTable, string[] files, bool force)
+        private static string LoadSnowflakeCommand(string stage, string targetTable, string[] files, bool force, string onError)
         {
             var sb = new StringBuilder($"COPY INTO {targetTable} FROM '@{stage}'");
 
@@ -118,7 +121,14 @@ namespace Endjin.Snowflake
                 sb.Append($" FILES=({filesOptions})");
             }
 
-            sb.Append($" FORCE={force};");
+            sb.Append($" FORCE={force}");
+
+            if (onError != null)
+            {
+                sb.Append($" ON_ERROR={onError}");
+            }
+
+            sb.Append($";");
 
             return sb.ToString();
         }

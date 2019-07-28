@@ -46,10 +46,12 @@ namespace Endjin.Snowflake.Host
             }
 
             IConfiguration config = serviceProvider.GetService<IConfiguration>();
+
+            // TODO: catch exceptions taht result from empty connectionString (e.g. no host.settings file) and therefore product object instance error here
             var client = new SnowflakeClient(config["ConnectionString"]);
             try
             {
-                client.Load(command.Stage, command.TargetTable, command.Files, command.Warehouse, command.Database, command.Schema, command.Force);
+                client.Load(command.Stage, command.TargetTable, command.Files, command.Warehouse, command.Database, command.Schema, command.Force, command.OnError);
             }
             catch (Exception e)
             {

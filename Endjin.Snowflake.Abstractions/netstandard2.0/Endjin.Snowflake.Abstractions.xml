@@ -55,6 +55,11 @@
             already been previously loaded.
             </summary>
         </member>
+        <member name="P:Endjin.Snowflake.Commands.LoadCommand.OnError">
+            <summary>
+            Gets or sets the onError vonstant to apply to the load command.
+            </summary>
+        </member>
         <member name="M:Endjin.Snowflake.Commands.LoadCommand.Validate(System.String@)">
             <summary>
             Validates the command returning true if the command is valid.

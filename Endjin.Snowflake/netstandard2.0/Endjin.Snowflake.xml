@@ -27,7 +27,7 @@
             A set of extension methods for executing Snowflake commands.
             </summary>
         </member>
-        <member name="M:Endjin.Snowflake.SnowflakeClientExtensions.Load(Endjin.Snowflake.SnowflakeClient,System.String,System.String,System.String[],System.String,System.String,System.String,System.Boolean)">
+        <member name="M:Endjin.Snowflake.SnowflakeClientExtensions.Load(Endjin.Snowflake.SnowflakeClient,System.String,System.String,System.String[],System.String,System.String,System.String,System.Boolean,System.String)">
             <summary>
             Instructs Snowflake to load data from a stage into a target table.
             </summary>
@@ -61,6 +61,9 @@
             <param name="force">
             A value indicating whether Snowflake should load all files even if they have
             already been previously loaded.
+            </param>
+            <param name="onError">
+            A value indicating how Snowflake should handle files with error rows.
             </param>
             <returns>The number of rows affected.</returns>
         </member>
