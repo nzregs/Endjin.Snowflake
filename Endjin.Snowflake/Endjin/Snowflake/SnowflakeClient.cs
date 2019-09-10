@@ -6,6 +6,7 @@ namespace Endjin.Snowflake
 {
     using System.Data;
     using global::Snowflake.Data.Client;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// A client for submitting queries to Snowflake.
@@ -46,6 +47,51 @@ namespace Endjin.Snowflake
 
                 return affectedRows;
             }
+        }
+
+        /// <summary>
+        /// Executes a sequence of Snowflake statements that are expected to return a result set.
+        /// </summary>
+        /// <param name="statements">The query statements to execute.</param>
+        /// <returns>JObject containing the result set from the execution of the last statement in set.</returns>
+        public JObject ExecuteReader(params string[] statements)
+        {
+            var output = new JObject();
+
+            using (IDbConnection conn = new SnowflakeDbConnection())
+            {
+                conn.ConnectionString = this.connectionString;
+                conn.Open();
+
+                using (IDbCommand cmd = conn.CreateCommand())
+                {
+                    // Run every query except the last one using ExecuteNonQuery
+                    for (int i = 0; i < statements.Length - 1; i++)
+                    {
+                        cmd.CommandText = statements[i].Trim();
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Finally run the last query using ExecuteReader() so we can collect the output
+                    cmd.CommandText = statements[statements.Length - 1].Trim();
+                    IDataReader reader = cmd.ExecuteReader();
+
+                    // The result should be a table with one row and n columns, format the column/value pairs in JSON
+                    while (reader.Read())
+                    {
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            string columnName = reader.GetName(i);
+                            string value = reader[i].ToString();
+                            output.Add(columnName, value);
+                        }
+                    }
+                }
+
+                conn.Close();
+            }
+
+            return output;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Endjin.Snowflake
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// A set of extension methods for executing Snowflake commands.
@@ -52,11 +53,13 @@ namespace Endjin.Snowflake
         /// A value indicating how Snowflake should handle files with error rows.
         /// </param>
         /// <returns>The number of rows affected.</returns>
-        public static int Load(this SnowflakeClient client, string stage, string targetTable, string[] files = null, string warehouse = null, string database = null, string schema = null, bool force = false, string onError = null)
+        public static JObject Load(this SnowflakeClient client, string stage, string targetTable, string[] files = null, string warehouse = null, string database = null, string schema = null, bool force = false, string onError = null)
         {
+            var output = new JObject();
             IList<string> commands = DefineSnowflakeQueryContext(warehouse, database, schema);
             commands.Add(LoadSnowflakeCommand(stage, targetTable, files, force, onError));
-            return client.ExecuteNonQuery(commands.ToArray());
+            output = client.ExecuteReader(commands.ToArray());
+            return output;
         }
 
         /// <summary>
@@ -95,11 +98,14 @@ namespace Endjin.Snowflake
         /// <param name="overwrite">
         /// A value indicating whether Snowflake should overwrite existing files if they already exist in the stage.
         /// </param>
-        public static void Unload(this SnowflakeClient client, string stage, string query, string filePrefix, string warehouse = null, string database = null, string schema = null, bool singleFile = false, bool overwrite = false)
+        /// <returns>JObject result set.</returns>
+        public static JObject Unload(this SnowflakeClient client, string stage, string query, string filePrefix, string warehouse = null, string database = null, string schema = null, bool singleFile = false, bool overwrite = false)
         {
+            var output = new JObject();
             IList<string> commands = DefineSnowflakeQueryContext(warehouse, database, schema);
             commands.Add(UnloadSnowflakeCommand(stage, query, filePrefix, singleFile, overwrite));
-            client.ExecuteNonQuery(commands.ToArray());
+            output = client.ExecuteReader(commands.ToArray());
+            return output;
         }
 
         private static string UnloadSnowflakeCommand(string stage, string query, string filePrefix, bool singleFile, bool overwrite)

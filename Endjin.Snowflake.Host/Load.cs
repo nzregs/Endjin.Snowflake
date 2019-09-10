@@ -15,6 +15,7 @@ namespace Endjin.Snowflake.Host
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// The function class that implements the load HTTP operation.
@@ -49,9 +50,10 @@ namespace Endjin.Snowflake.Host
 
             // TODO: catch exceptions taht result from empty connectionString (e.g. no host.settings file) and therefore product object instance error here
             var client = new SnowflakeClient(config["ConnectionString"]);
+            JObject result;
             try
             {
-                client.Load(command.Stage, command.TargetTable, command.Files, command.Warehouse, command.Database, command.Schema, command.Force, command.OnError);
+                result = client.Load(command.Stage, command.TargetTable, command.Files, command.Warehouse, command.Database, command.Schema, command.Force, command.OnError);
             }
             catch (Exception e)
             {
@@ -59,7 +61,7 @@ namespace Endjin.Snowflake.Host
                 return req.CreateResponse(HttpStatusCode.InternalServerError, e.Message);
             }
 
-            return req.CreateResponse(HttpStatusCode.OK);
+            return req.CreateResponse<JObject>(HttpStatusCode.OK, result);
         }
     }
 }

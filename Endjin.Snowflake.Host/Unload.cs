@@ -15,6 +15,7 @@ namespace Endjin.Snowflake.Host
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// The function class that implements the unload HTTP operation.
@@ -47,9 +48,10 @@ namespace Endjin.Snowflake.Host
 
             IConfiguration config = serviceProvider.GetService<IConfiguration>();
             var client = new SnowflakeClient(config["ConnectionString"]);
+            JObject result;
             try
             {
-                client.Unload(command.Stage, command.Query, command.FilePrefix, command.Warehouse, command.Database, command.Schema, command.SingleFile, command.Overwrite);
+                result = client.Unload(command.Stage, command.Query, command.FilePrefix, command.Warehouse, command.Database, command.Schema, command.SingleFile, command.Overwrite);
             }
             catch (Exception e)
             {
@@ -57,7 +59,7 @@ namespace Endjin.Snowflake.Host
                 return req.CreateResponse(HttpStatusCode.InternalServerError, e.Message);
             }
 
-            return req.CreateResponse(HttpStatusCode.OK);
+            return req.CreateResponse<JObject>(HttpStatusCode.OK, result);
         }
     }
 }

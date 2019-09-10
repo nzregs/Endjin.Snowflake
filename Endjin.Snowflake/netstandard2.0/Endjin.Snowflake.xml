@@ -22,6 +22,13 @@
             <param name="statements">The query statements to execute.</param>
             <returns>The number of rows affected. When more than one statement is supplied the method will return the number of rows affected for the last statement only.</returns>
         </member>
+        <member name="M:Endjin.Snowflake.SnowflakeClient.ExecuteReader(System.String[])">
+            <summary>
+            Executes a sequence of Snowflake statements that are expected to return a result set.
+            </summary>
+            <param name="statements">The query statements to execute.</param>
+            <returns>JObject containing the result set from the execution of the last statement in set.</returns>
+        </member>
         <member name="T:Endjin.Snowflake.SnowflakeClientExtensions">
             <summary>
             A set of extension methods for executing Snowflake commands.
@@ -104,6 +111,7 @@
             <param name="overwrite">
             A value indicating whether Snowflake should overwrite existing files if they already exist in the stage.
             </param>
+            <returns>JObject result set.</returns>
         </member>
     </members>
 </doc>
