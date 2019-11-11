@@ -4,7 +4,9 @@
 
 namespace Endjin.Snowflake
 {
+    using System.Collections.Generic;
     using System.Data;
+    using System.Dynamic;
     using global::Snowflake.Data.Client;
     using Newtonsoft.Json.Linq;
 
@@ -56,6 +58,8 @@ namespace Endjin.Snowflake
         /// <returns>JObject containing the result set from the execution of the last statement in set.</returns>
         public JObject ExecuteReader(params string[] statements)
         {
+            var rows = new JArray();
+            var row = new JObject();
             var output = new JObject();
 
             using (IDbConnection conn = new SnowflakeDbConnection())
@@ -76,16 +80,21 @@ namespace Endjin.Snowflake
                     cmd.CommandText = statements[statements.Length - 1].Trim();
                     IDataReader reader = cmd.ExecuteReader();
 
-                    // The result should be a table with one row and n columns, format the column/value pairs in JSON
+                    // The result should be a table with m rows and n columns, format the column/value pairs in JSON
                     while (reader.Read())
                     {
+                        row = new JObject();
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             string columnName = reader.GetName(i);
                             string value = reader[i].ToString();
-                            output.Add(columnName, value);
+                            row.Add(columnName, value);
                         }
+
+                        rows.Add(row);
                     }
+
+                    output.Add("rows", rows);
                 }
 
                 conn.Close();

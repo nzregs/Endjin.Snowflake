@@ -34,7 +34,7 @@
             A set of extension methods for executing Snowflake commands.
             </summary>
         </member>
-        <member name="M:Endjin.Snowflake.SnowflakeClientExtensions.Load(Endjin.Snowflake.SnowflakeClient,System.String,System.String,System.String[],System.String,System.String,System.String,System.Boolean,System.String)">
+        <member name="M:Endjin.Snowflake.SnowflakeClientExtensions.Load(Endjin.Snowflake.SnowflakeClient,System.String,System.String,System.String[],System.String,System.String,System.String,System.Boolean,System.String,System.String)">
             <summary>
             Instructs Snowflake to load data from a stage into a target table.
             </summary>
@@ -71,6 +71,9 @@
             </param>
             <param name="onError">
             A value indicating how Snowflake should handle files with error rows.
+            </param>
+            <param name="validationMode">
+            A value indicating which validation_mode Snowflake should use for the COPY INTO.
             </param>
             <returns>The number of rows affected.</returns>
         </member>

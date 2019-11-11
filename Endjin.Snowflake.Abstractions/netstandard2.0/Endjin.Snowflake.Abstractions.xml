@@ -57,7 +57,12 @@
         </member>
         <member name="P:Endjin.Snowflake.Commands.LoadCommand.OnError">
             <summary>
-            Gets or sets the onError vonstant to apply to the load command.
+            Gets or sets the onError constant to apply to the load command.
+            </summary>
+        </member>
+        <member name="P:Endjin.Snowflake.Commands.LoadCommand.ValidationMode">
+            <summary>
+            Gets or sets the ValidationMode constant to apply to the load command.
             </summary>
         </member>
         <member name="M:Endjin.Snowflake.Commands.LoadCommand.Validate(System.String@)">

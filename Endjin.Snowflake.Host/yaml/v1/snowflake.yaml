@@ -80,6 +80,14 @@ components:
           description: >-
              A value indicating how Snowflake should proceed when encountering error rows in source files
               e.g. skip, abort, continue.
+        validationMode:
+          type: string
+          nullable: true
+          description: >-
+            RETURN_n_ROWS: Validates the specified number of rows, if no errors are encountered; otherwise, fails at the first error encountered in the rows. | 
+                RETURN_ERRORS: Returns all errors (parsing, conversion, etc.) across all files specified in the COPY statement.
+                RETURN_ALL_ERRORS: Returns all errors across all files specified in the COPY statement, including files with errors that were partially loaded during an earlier load because the ON_ERROR copy option was set to CONTINUE during the load.
+                
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

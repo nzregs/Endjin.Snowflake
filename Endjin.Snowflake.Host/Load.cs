@@ -53,7 +53,7 @@ namespace Endjin.Snowflake.Host
             JObject result;
             try
             {
-                result = client.Load(command.Stage, command.TargetTable, command.Files, command.Warehouse, command.Database, command.Schema, command.Force, command.OnError);
+                result = client.Load(command.Stage, command.TargetTable, command.Files, command.Warehouse, command.Database, command.Schema, command.Force, command.OnError, command.ValidationMode);
             }
             catch (Exception e)
             {

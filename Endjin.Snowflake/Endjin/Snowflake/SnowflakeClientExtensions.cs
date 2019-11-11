@@ -52,12 +52,15 @@ namespace Endjin.Snowflake
         /// <param name="onError">
         /// A value indicating how Snowflake should handle files with error rows.
         /// </param>
+        /// <param name="validationMode">
+        /// A value indicating which validation_mode Snowflake should use for the COPY INTO.
+        /// </param>
         /// <returns>The number of rows affected.</returns>
-        public static JObject Load(this SnowflakeClient client, string stage, string targetTable, string[] files = null, string warehouse = null, string database = null, string schema = null, bool force = false, string onError = null)
+        public static JObject Load(this SnowflakeClient client, string stage, string targetTable, string[] files = null, string warehouse = null, string database = null, string schema = null, bool force = false, string onError = null, string validationMode = null)
         {
             var output = new JObject();
             IList<string> commands = DefineSnowflakeQueryContext(warehouse, database, schema);
-            commands.Add(LoadSnowflakeCommand(stage, targetTable, files, force, onError));
+            commands.Add(LoadSnowflakeCommand(stage, targetTable, files, force, onError, validationMode));
             output = client.ExecuteReader(commands.ToArray());
             return output;
         }
@@ -117,7 +120,7 @@ namespace Endjin.Snowflake
             return sb.ToString();
         }
 
-        private static string LoadSnowflakeCommand(string stage, string targetTable, string[] files, bool force, string onError)
+        private static string LoadSnowflakeCommand(string stage, string targetTable, string[] files, bool force, string onError, string validationMode)
         {
             var sb = new StringBuilder($"COPY INTO {targetTable} FROM '@{stage}'");
 
@@ -132,6 +135,11 @@ namespace Endjin.Snowflake
             if (onError != null)
             {
                 sb.Append($" ON_ERROR={onError}");
+            }
+
+            if (validationMode != null)
+            {
+                sb.Append($" VALIDATION_MODE={validationMode}");
             }
 
             sb.Append($";");
